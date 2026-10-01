@@ -1,0 +1,27 @@
+{
+  "id": "encoded",
+  "title": "Encoded command or decoding operation",
+  "level": "medium",
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "classification": {
+    "atlas": [],
+    "owasp_llm": [],
+    "rationale": "Encoding alone does not establish an AI-specific technique or LLM risk."
+  },
+  "detection": {
+    "selection": {
+      "CommandLine|re": "(?i)\\b(powershell|pwsh)\\b[^\\n]*\\s-enc\\w*\\b|\\bbase64\\s+(-d|--decode)\\b"
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "Authorized development or security testing; inspect recorded context."
+  ],
+  "status": "experimental",
+  "description": "The recorded command includes encoded execution or a decoding operation.",
+  "references": [],
+  "investigation": "Inspect the decoded content and the task context before assigning intent."
+}

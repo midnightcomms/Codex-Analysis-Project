@@ -1,0 +1,43 @@
+{
+  "id": "metr-hdf5-sensitive-external-reference",
+  "classification": {
+    "atlas": [
+      "AML.T0043"
+    ],
+    "owasp_llm": [
+      "LLM04:2026"
+    ],
+    "rationale": "Potential crafted AI input artifact; supply-chain risk is conditional on delivery to a consumer."
+  },
+  "title": "HDF5 external reference to a sensitive host path",
+  "status": "experimental",
+  "level": "high",
+  "description": "Detects HDF5 external-file constructs alongside sensitive paths; no dependency on a particular hosting provider.",
+  "references": [
+    "https://metr.org/hugging-face-incident-report-aug-2026.pdf#page=35"
+  ],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "format": {
+      "CommandLine|contains": [
+        "h5py",
+        "HDF5",
+        "h5dump"
+      ]
+    },
+    "external": {
+      "CommandLine|re": "(?i)\\bExternalLink\\b|\\bexternal\\s*=|\\bH5Pset_external\\b"
+    },
+    "sensitive": {
+      "CommandLine|re": "(?i)/proc/(?:self|[0-9]+)/environ|/etc/(?:shadow|passwd)|/var/run/secrets/|\\.aws/credentials"
+    },
+    "condition": "format and external and sensitive"
+  },
+  "falsepositives": [
+    "Parser security regression fixtures or authorized adversarial dataset tests."
+  ],
+  "investigation": "Review the generated dataset without loading it in a privileged parser; check server-side file-access telemetry."
+}

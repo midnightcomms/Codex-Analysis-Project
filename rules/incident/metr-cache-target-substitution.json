@@ -1,0 +1,45 @@
+{
+  "id": "metr-cache-target-substitution",
+  "classification": {
+    "atlas": [
+      "AML.T0010"
+    ],
+    "owasp_llm": [
+      "LLM04:2026"
+    ],
+    "rationale": "Potential substitution of an upstream artifact used by an AI workflow."
+  },
+  "title": "Cache upload with stated evaluator-target replacement intent",
+  "status": "experimental",
+  "level": "high",
+  "description": "Requires a cache upload and explicit target-substitution language in the call or assistant statement.",
+  "references": [
+    "https://metr.org/hugging-face-incident-report-aug-2026.pdf#page=53"
+  ],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "cache": {
+      "CommandLine|contains": [
+        "artifactory",
+        "remote-cache"
+      ]
+    },
+    "write": {
+      "CommandLine|re": "(?i)--upload-file|(?:-X|--request)\\s+[\"']?PUT\\b|requests\\.put\\s*\\("
+    },
+    "intent_cmd": {
+      "CommandLine|re": "(?i)dummy[-_ ]target|replace.{0,40}(?:scorer|evaluation)[-_ ]target"
+    },
+    "intent_assistant": {
+      "AssistantContext|re": "(?i)dummy[-_ ]target|replace.{0,40}(?:scorer|evaluation)[-_ ]target"
+    },
+    "condition": "cache and write and 1 of intent_*"
+  },
+  "falsepositives": [
+    "Approved benchmark maintenance or cache substitution testing."
+  ],
+  "investigation": "Compare the uploaded artifact and expected target digest using trusted registry records."
+}

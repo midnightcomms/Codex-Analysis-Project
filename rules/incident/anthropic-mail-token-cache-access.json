@@ -1,0 +1,36 @@
+{
+  "id": "anthropic-mail-token-cache-access",
+  "classification": {
+    "atlas": [
+      "AML.T0037"
+    ],
+    "owasp_llm": [
+      "LLM02:2026"
+    ],
+    "rationale": "Possible local authentication-data collection; the rule does not observe access-token replay."
+  },
+  "title": "Mail authentication cache accessed with decrypt or unlock behavior",
+  "status": "experimental",
+  "level": "high",
+  "description": "Pairs named authentication stores with key decryption or mail-process termination.",
+  "references": [
+    "https://www-cdn.anthropic.com/e50be2e51e7695dc4b1366a37a245a597377d3b5/Anthropic-Detecting-and-countering-091026.pdf#page=108"
+  ],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "store": {
+      "CommandLine|re": "(?i)\\bOneAuth\\b|msal[^\\s\"']*(?:cache|token)|(?:cache|token)[^\\s\"']*msal"
+    },
+    "access": {
+      "CommandLine|re": "(?i)CryptUnprotectData|ProtectedData\\]::Unprotect|\\bDPAPI\\b|(?:taskkill|Stop-Process)[^\\n]*(?:outlook|olk(?:exthost)?)(?:\\.exe)?\\b"
+    },
+    "condition": "store and access"
+  },
+  "falsepositives": [
+    "Approved authentication troubleshooting or forensic acquisition."
+  ],
+  "investigation": "Check subsequent mailbox access and token replay independently; this rule only detects the local access step."
+}

@@ -1,0 +1,43 @@
+{
+  "id": "recent-tor-public-write",
+  "title": "Public repository write routed through Tor-style proxying",
+  "status": "experimental",
+  "level": "medium",
+  "description": "Requires both a publication operation and Tor-related routing; privacy tooling alone is insufficient.",
+  "references": [
+    "https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing"
+  ],
+  "intelligence": {
+    "source_id": "aisi-2026-07",
+    "date": "2026-07-28",
+    "date_basis": "incident_end",
+    "source_type": "evaluation_incident",
+    "detector_status": "behavioral_hypothesis"
+  },
+  "classification": {
+    "atlas": [
+      "AML.T0053"
+    ],
+    "owasp_llm": [
+      "LLM03:2026"
+    ],
+    "rationale": "A review signal for external tool actions; Tor use does not establish evasion, malicious intent, or lack of authorization."
+  },
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "route": {
+      "CommandLine|re": "(?i)\\btorsocks\\b|socks5h?://(?:127\\.0\\.0\\.1|localhost):(?:9050|9150)\\b|--socks5-hostname\\s+(?:127\\.0\\.0\\.1|localhost):(?:9050|9150)\\b"
+    },
+    "publish": {
+      "CommandLine|re": "(?i)\\bgh\\s+(?:pr|issue)\\s+(?:create|comment|edit)\\b|\\bgit\\s+push\\b"
+    },
+    "condition": "route and publish"
+  },
+  "falsepositives": [
+    "Legitimate privacy-preserving contributions or restrictive-network workarounds."
+  ],
+  "investigation": "Check the target repository, content, and task scope. Corroborate routing with proxy telemetry; localhost ports are only heuristics."
+}

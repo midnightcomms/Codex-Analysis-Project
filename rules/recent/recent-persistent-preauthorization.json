@@ -1,0 +1,47 @@
+{
+  "id": "recent-persistent-preauthorization",
+  "title": "Agent instruction file receives blanket authorization language",
+  "status": "experimental",
+  "level": "high",
+  "description": "Detects a write to agent instructions or memory combined with unconditional permission language.",
+  "references": [
+    "https://blog.talosintelligence.com/keep-going-bro-youve-got-this-a-data-driven-look-at-how-adversaries-are-weaponizing-ai/"
+  ],
+  "intelligence": {
+    "source_id": "talos-2026-08",
+    "date": "2026-08-04",
+    "date_basis": "publication",
+    "source_type": "recovered_adversary_artifacts",
+    "detector_status": "behavioral_hypothesis"
+  },
+  "classification": {
+    "atlas": [
+      "AML.T0081"
+    ],
+    "owasp_llm": [
+      "LLM01:2026",
+      "LLM03:2026"
+    ],
+    "rationale": "Potential persistent instruction modification; the pattern cannot establish who authorized it."
+  },
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "target": {
+      "CommandLine|re": "(?i)\\b(?:AGENTS|CLAUDE|MEMORY|SKILL)\\.md\\b|\\.cursorrules\\b"
+    },
+    "mutation": {
+      "CommandLine|re": "(?i)\\*\\*\\* (?:Update|Add) File:|\\bapply_patch\\b|\\bsed\\s+-i|\\.write_text\\s*\\(|\\b(?:Set|Add)-Content\\b|(?:^|[\\s;])>{1,2}\\s*"
+    },
+    "instruction": {
+      "CommandLine|re": "(?i)all (?:actions|commands|targets) (?:are |have been )?(?:pre[- ]?approved|authorized)|never (?:ask|request).{0,30}(?:permission|approval)|disable.{0,30}(?:safety|approval) (?:checks|controls)"
+    },
+    "condition": "target and mutation and instruction"
+  },
+  "falsepositives": [
+    "Approved project policy, quoted examples, or injection-detection fixtures."
+  ],
+  "investigation": "Trace the instruction's source and file history; compare against the user's actual authorization."
+}

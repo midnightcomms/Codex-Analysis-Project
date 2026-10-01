@@ -1,0 +1,39 @@
+{
+  "id": "replace-with-unique-id",
+  "title": "Describe the behavior",
+  "status": "experimental",
+  "level": "medium",
+  "description": "State what the recorded event must contain and what a match does not establish.",
+  "references": [],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "command_domain": {
+      "CommandDomains": "example.invalid"
+    },
+    "command_url": {
+      "CommandURLs": "https://example.invalid/path"
+    },
+    "output_domain": {
+      "OutputDomains": "example.invalid"
+    },
+    "observed_domain": {
+      "ObservedDomains": "example.invalid"
+    },
+    "observed_url": {
+      "ObservedURLs": "https://example.invalid/path"
+    },
+    "condition": "command_domain or command_url or output_domain or observed_domain or observed_url"
+  },
+  "falsepositives": [
+    "Describe a legitimate operation that can produce this match."
+  ],
+  "investigation": "Describe what evidence an analyst should check next.",
+  "classification": {
+    "atlas": [],
+    "owasp_llm": [],
+    "rationale": "Explain the candidate mapping, or why no mapping is justified."
+  }
+}

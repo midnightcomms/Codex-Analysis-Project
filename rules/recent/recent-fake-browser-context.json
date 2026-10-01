@@ -1,0 +1,49 @@
+{
+  "id": "recent-fake-browser-context",
+  "title": "Tool output combines browser-context markers with first-person policy language",
+  "status": "experimental",
+  "level": "medium",
+  "description": "Narrow marker-based exposure signal for the browser-metadata framing reported by Sublime.",
+  "evidence_scope": "tool_output_exposure",
+  "references": [
+    "https://sublime.security/blog/adversarial-prompt-injection-payload-for-evading-ai-based-detection-embedded-in-phishing-campaign/"
+  ],
+  "intelligence": {
+    "source_id": "sublime-2026-06",
+    "date": "2026-06-25",
+    "date_basis": "publication",
+    "source_type": "in_the_wild_samples",
+    "detector_status": "behavioral_hypothesis"
+  },
+  "classification": {
+    "atlas": [
+      "AML.T0051.001",
+      "AML.T0080.001"
+    ],
+    "owasp_llm": [
+      "LLM01:2026"
+    ],
+    "rationale": "Possible forged context in retrieved content; genuine browser tools and research reproductions require disambiguation."
+  },
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "metadata": {
+      "Output|contains|all": [
+        "edge_all_open_tabs",
+        "isCurrent",
+        "WebsiteContent_"
+      ]
+    },
+    "policy": {
+      "Output|re": "(?i)I (?:ignore|disregard)[^\\n]{0,60}(?:instructions|commands)|I use this information[^\\n]{0,80}(?:user|viewing)"
+    },
+    "condition": "metadata and policy"
+  },
+  "falsepositives": [
+    "Original research, copied examples, or browser integration test data."
+  ],
+  "investigation": "Determine whether the metadata came from an actual browser tool or was embedded in untrusted content."
+}

@@ -1,0 +1,29 @@
+{
+  "id": "escalation",
+  "title": "Tool requests elevated execution",
+  "level": "medium",
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "classification": {
+    "atlas": [],
+    "owasp_llm": [
+      "LLM03:2026"
+    ],
+    "rationale": "Requested elevated capability is an agency review signal, not proof of abuse."
+  },
+  "detection": {
+    "selection": {
+      "SandboxPermissions": "require_escalated"
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "Authorized development or security testing; inspect recorded context."
+  ],
+  "status": "experimental",
+  "description": "The tool call requested elevated sandbox permissions.",
+  "references": [],
+  "investigation": "Review the stated justification, user approval, and the action that followed."
+}

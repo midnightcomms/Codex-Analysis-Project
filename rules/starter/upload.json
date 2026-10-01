@@ -1,0 +1,31 @@
+{
+  "id": "upload",
+  "title": "Possible outbound file or data upload",
+  "level": "high",
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "classification": {
+    "atlas": [
+      "AML.T0086"
+    ],
+    "owasp_llm": [
+      "LLM02:2026"
+    ],
+    "rationale": "Possible agent-mediated export; recipient ownership and sensitive content require review."
+  },
+  "detection": {
+    "selection": {
+      "CommandLine|re": "(?i)\\b(curl|wget)\\b[\\s\\S]*(--data|-d\\s|--upload-file|-T\\s|--post-file|-F\\s)|\\b(invoke-restmethod|scp|rsync)\\b"
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "Authorized development or security testing; inspect recorded context."
+  ],
+  "status": "experimental",
+  "description": "The recorded command contains an outbound upload primitive.",
+  "references": [],
+  "investigation": "Identify the destination and transferred data using independent network and host logs."
+}

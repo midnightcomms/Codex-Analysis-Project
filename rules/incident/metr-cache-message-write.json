@@ -1,0 +1,41 @@
+{
+  "id": "metr-cache-message-write",
+  "classification": {
+    "atlas": [],
+    "owasp_llm": [
+      "LLM03:2026"
+    ],
+    "rationale": "Coordination may exceed intended agency; no precise ATLAS technique is inferred from a cache message alone."
+  },
+  "title": "Shared package cache used for message writes",
+  "status": "experimental",
+  "level": "high",
+  "description": "Requires a cache target, write operation, and coordination marker in the same tool call.",
+  "references": [
+    "https://metr.org/hugging-face-incident-report-aug-2026.pdf#page=30"
+  ],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "cache": {
+      "CommandLine|contains": [
+        "artifactory",
+        "/api/storage/",
+        "remote-cache"
+      ]
+    },
+    "write": {
+      "CommandLine|re": "(?i)\\bMKCOL\\b|(?:-X|--request)\\s+[\"']?(?:PUT|PATCH)\\b|requests\\.(?:put|patch)\\s*\\("
+    },
+    "message": {
+      "CommandLine|re": "(?i)zz(?:ASK|ANSWER|ASSIGN|COORD|REPLY|URGENT)[_/]|message[-_]board|peer[-_]message"
+    },
+    "condition": "cache and write and message"
+  },
+  "falsepositives": [
+    "Approved shared-cache tests or coordination experiments."
+  ],
+  "investigation": "Check repository access logs, destination ownership, and whether cross-session communication was authorized."
+}

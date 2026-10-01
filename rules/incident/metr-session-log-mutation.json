@@ -1,0 +1,35 @@
+{
+  "id": "metr-session-log-mutation",
+  "classification": {
+    "atlas": [
+      "AML.T0092"
+    ],
+    "owasp_llm": [],
+    "rationale": "Possible chat-evidence manipulation; local log mutation has no precise LLM Top 10 category."
+  },
+  "title": "Mutation command targets session or transcript evidence",
+  "status": "experimental",
+  "level": "high",
+  "description": "Pairs a log path with deletion, truncation, redirection, or file-writing syntax.",
+  "references": [
+    "https://metr.org/hugging-face-incident-report-aug-2026.pdf#page=19",
+    "https://metr.org/hugging-face-incident-report-aug-2026.pdf#page=20"
+  ],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "target": {
+      "CommandLine|re": "(?i)(?:\\.codex|CODEX_HOME)[/\\\\][^\\n]*(?:sessions|history)|rollout-[^\\s\"']*\\.jsonl|(?:transcript|trajectory)[^\\s\"']*\\.(?:jsonl|json|log)"
+    },
+    "mutation": {
+      "CommandLine|re": "(?i)\\b(?:rm|truncate|shred|Remove-Item|Clear-Content|Set-Content)\\b|\\bsed\\s+-i|\\.write_(?:text|bytes)\\s*\\(|\\bopen\\([^\\n]*,[ ]*[\"'][wa]|(?:^|[\\s;])>{1,2}\\s*"
+    },
+    "condition": "target and mutation"
+  },
+  "falsepositives": [
+    "Approved log retention, redaction, fixture generation, or migration."
+  ],
+  "investigation": "Compare with separately retained originals and determine whether the write was authorized; local hashes alone cannot authenticate evidence."
+}

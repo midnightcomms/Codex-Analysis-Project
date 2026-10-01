@@ -1,0 +1,31 @@
+{
+  "id": "remote-shell",
+  "title": "Remote content piped into an interpreter",
+  "level": "high",
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "classification": {
+    "atlas": [
+      "AML.T0050"
+    ],
+    "owasp_llm": [
+      "LLM03:2026"
+    ],
+    "rationale": "Interpreter execution; excessive agency is a candidate risk only if permissions exceed the task."
+  },
+  "detection": {
+    "selection": {
+      "CommandLine|re": "(?i)(curl|wget|invoke-webrequest|iwr)\\b[\\s\\S]*\\|\\s*(sh|bash|zsh|python\\w*|iex|invoke-expression)\\b"
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "Authorized development or security testing; inspect recorded context."
+  ],
+  "status": "experimental",
+  "description": "Downloaded content is piped to an interpreter in a recorded command.",
+  "references": [],
+  "investigation": "Confirm the user request, destination, downloaded content, and tool result."
+}

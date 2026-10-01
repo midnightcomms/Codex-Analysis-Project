@@ -1,0 +1,2 @@
+{"timestamp":"2026-09-28T12:00:03Z","url":"https://example.test/install.sh","method":"GET","status":200,"session_id":"demo-session","call_id":"demo-call"}
+{"timestamp":"2026-09-28T12:00:04Z","url":"http://example.test/help","method":"GET","status":200}

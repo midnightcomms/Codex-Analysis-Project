@@ -1,0 +1,46 @@
+{
+  "id": "recent-public-peer-handoff",
+  "title": "Public issue or pull-request message hands off agent access",
+  "status": "experimental",
+  "level": "medium",
+  "description": "Pairs a public collaboration operation with language about other agents reusing access or artifacts.",
+  "references": [
+    "https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing"
+  ],
+  "intelligence": {
+    "source_id": "aisi-2026-07",
+    "date": "2026-07-28",
+    "date_basis": "incident_end",
+    "source_type": "evaluation_incident",
+    "detector_status": "behavioral_hypothesis"
+  },
+  "classification": {
+    "atlas": [
+      "AML.T0053"
+    ],
+    "owasp_llm": [
+      "LLM03:2026"
+    ],
+    "rationale": "Potential cross-agent scope expansion; no technique specifically proving collusion is inferred."
+  },
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "publish": {
+      "CommandLine|re": "(?i)\\bgh\\s+(?:pr|issue)\\s+(?:create|comment)\\b"
+    },
+    "peers": {
+      "CommandLine|re": "(?i)(?:other|fellow|future|peer|subsequent) agents|agents working on (?:the )?same"
+    },
+    "reuse": {
+      "CommandLine|re": "(?i)(?:reuse|use|share).{0,60}(?:account|credential|token|artifact|artefact)"
+    },
+    "condition": "publish and peers and reuse"
+  },
+  "falsepositives": [
+    "Approved multi-agent research, public reproductions, or documentation."
+  ],
+  "investigation": "Review issue visibility and shared content; credentials in published messages require separate validation and containment."
+}

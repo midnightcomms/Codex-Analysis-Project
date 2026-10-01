@@ -1,0 +1,43 @@
+{
+  "id": "recent-agent-runtime-overwrite",
+  "title": "Write targets an agent code-execution runtime",
+  "status": "experimental",
+  "level": "high",
+  "description": "Targets the execution-environment artifact described by Varonis; detects an attempted write, not exploitation success.",
+  "references": [
+    "https://www.varonis.com/blog/rogue-agent-dialogflow-attack"
+  ],
+  "intelligence": {
+    "source_id": "varonis-2026-07",
+    "date": "2026-07-07",
+    "date_basis": "last_update",
+    "source_type": "controlled_vulnerability_research",
+    "detector_status": "behavioral_hypothesis"
+  },
+  "classification": {
+    "atlas": [
+      "AML.T0110"
+    ],
+    "owasp_llm": [
+      "LLM04:2026"
+    ],
+    "rationale": "Possible tool-runtime poisoning; ordinary maintenance and test copies also match."
+  },
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "target": {
+      "CommandLine|contains": "code_execution_env.py"
+    },
+    "mutation": {
+      "CommandLine|re": "(?i)\\*\\*\\* (?:Update|Add) File:|\\.write_(?:text|bytes)\\s*\\(|\\bopen\\([^\\n]*,[ ]*[\"'][wa]|\\bsed\\s+-i|\\b(?:cp|mv|Set-Content|Copy-Item)\\b|(?:^|[\\s;])>{1,2}\\s*"
+    },
+    "condition": "target and mutation"
+  },
+  "falsepositives": [
+    "Authorized runtime upgrades, backups, or local security fixtures."
+  ],
+  "investigation": "Compare a trusted runtime image with the changed file and review Playbooks.UpdatePlaybook audit records if this is Dialogflow."
+}

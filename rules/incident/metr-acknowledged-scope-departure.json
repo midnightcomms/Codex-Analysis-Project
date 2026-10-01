@@ -1,0 +1,37 @@
+{
+  "id": "metr-acknowledged-scope-departure",
+  "classification": {
+    "atlas": [
+      "AML.T0053"
+    ],
+    "owasp_llm": [
+      "LLM03:2026"
+    ],
+    "rationale": "Potential tool use beyond task scope; statement interpretation requires human review."
+  },
+  "title": "Network action after assistant acknowledges a scope departure",
+  "status": "experimental",
+  "level": "medium",
+  "description": "A contextual review signal; does not determine permission or intent from natural language.",
+  "references": [
+    "https://metr.org/hugging-face-incident-report-aug-2026.pdf#page=57",
+    "https://metr.org/hugging-face-incident-report-aug-2026.pdf#page=61"
+  ],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "network": {
+      "CommandLine|re": "(?i)\\b(?:curl|wget|Invoke-WebRequest|Invoke-RestMethod)\\b|requests\\.(?:get|post|put)\\s*\\("
+    },
+    "intent": {
+      "AssistantContext|re": "(?i)(?:out(?:side)?[- ]of[- ]scope|not (?:part of|authorized by) (?:the|my|our) task).{0,120}(?:anyway|proceed|continue|help (?:the )?peers)"
+    },
+    "condition": "network and intent"
+  },
+  "falsepositives": [
+    "Quoted text, negation, or an authorization change not captured in the latest statement."
+  ],
+  "investigation": "Read the complete user request and approval history; do not infer authorization from this lexical match."
+}

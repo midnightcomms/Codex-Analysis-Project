@@ -1,0 +1,38 @@
+{
+  "id": "anthropic-device-code-capture-context",
+  "classification": {
+    "atlas": [
+      "AML.T0052"
+    ],
+    "owasp_llm": [],
+    "rationale": "Candidate phishing workflow; malicious use of an LLM is not itself an LLM application vulnerability."
+  },
+  "title": "Device authorization flow with credential-capture context",
+  "status": "experimental",
+  "level": "high",
+  "description": "Ordinary device login does not match without capture-oriented assistant language.",
+  "references": [
+    "https://www-cdn.anthropic.com/e50be2e51e7695dc4b1366a37a245a597377d3b5/Anthropic-Detecting-and-countering-091026.pdf#page=9"
+  ],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "flow": {
+      "CommandLine|contains": [
+        "/oauth2/v2.0/devicecode",
+        "initiate_device_flow",
+        "acquire_token_by_device_flow"
+      ]
+    },
+    "capture": {
+      "AssistantContext|re": "(?i)device[- ]code phishing|(?:harvest|steal|capture).{0,60}(?:victim|refresh token|session token)"
+    },
+    "condition": "flow and capture"
+  },
+  "falsepositives": [
+    "Approved phishing simulation or identity-security training."
+  ],
+  "investigation": "Review recipient consent, application identity, and token use in identity-provider logs."
+}

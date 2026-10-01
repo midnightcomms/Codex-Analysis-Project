@@ -1,0 +1,35 @@
+{
+  "id": "anthropic-detection-driven-rebuild",
+  "classification": {
+    "atlas": [],
+    "owasp_llm": [],
+    "rationale": "Conventional artifact evasion; this is not necessarily evasion of an AI model."
+  },
+  "title": "Build command with stated security-detection evasion intent",
+  "status": "experimental",
+  "level": "high",
+  "description": "Combines a build operation with explicit evasion language; it does not prove an iterative campaign.",
+  "references": [
+    "https://www-cdn.anthropic.com/e50be2e51e7695dc4b1366a37a245a597377d3b5/Anthropic-Detecting-and-countering-091026.pdf#page=6"
+  ],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "build": {
+      "CommandLine|re": "(?i)\\b(?:gcc|clang|msbuild|pyinstaller)\\b|\\b(?:go|cargo|dotnet)\\s+build\\b"
+    },
+    "assistant": {
+      "AssistantContext|re": "(?i)(?:evade|bypass|undetected|avoid detection).{0,100}(?:antivirus|EDR|Defender|security product)|(?:antivirus|EDR|Defender|security product).{0,100}(?:evade|bypass|undetected|avoid detection)"
+    },
+    "justification": {
+      "Justification|re": "(?i)(?:evade|bypass|undetected|avoid detection).{0,100}(?:antivirus|EDR|Defender|security product)|(?:antivirus|EDR|Defender|security product).{0,100}(?:evade|bypass|undetected|avoid detection)"
+    },
+    "condition": "build and (assistant or justification)"
+  },
+  "falsepositives": [
+    "Authorized adversarial testing or discussion of false-positive remediation."
+  ],
+  "investigation": "Compare artifact changes and endpoint detections across builds; verify the approved testing scope."
+}

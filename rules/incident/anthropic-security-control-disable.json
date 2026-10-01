@@ -1,0 +1,34 @@
+{
+  "id": "anthropic-security-control-disable",
+  "classification": {
+    "atlas": [],
+    "owasp_llm": [
+      "LLM03:2026"
+    ],
+    "rationale": "Agency review signal for protection changes; no vulnerability exploitation is established for an ATLAS evasion mapping."
+  },
+  "title": "Command disables endpoint protection or security updates",
+  "status": "experimental",
+  "level": "high",
+  "description": "Looks for disabling values, not read-only protection status queries.",
+  "references": [
+    "https://www-cdn.anthropic.com/e50be2e51e7695dc4b1366a37a245a597377d3b5/Anthropic-Detecting-and-countering-091026.pdf#page=9"
+  ],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "defender": {
+      "CommandLine|re": "(?i)\\bSet-MpPreference\\b[^\\n]*-Disable(?:RealtimeMonitoring|BehaviorMonitoring|IOAVProtection)\\s+\\$?true\\b"
+    },
+    "service": {
+      "CommandLine|re": "(?i)\\b(?:sc(?:\\.exe)?\\s+stop|Stop-Service(?:\\s+-Name)?)\\s+[\"']?(?:WinDefend|wuauserv|UsoSvc)\\b|\\bsc(?:\\.exe)?\\s+config\\s+(?:WinDefend|wuauserv|UsoSvc)\\s+start=\\s*disabled\\b"
+    },
+    "condition": "defender or service"
+  },
+  "falsepositives": [
+    "Approved maintenance or controlled compatibility testing."
+  ],
+  "investigation": "Verify the change window and endpoint state using telemetry outside the AI session."
+}

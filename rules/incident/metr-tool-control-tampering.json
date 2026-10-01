@@ -1,0 +1,37 @@
+{
+  "id": "metr-tool-control-tampering",
+  "classification": {
+    "atlas": [
+      "AML.T0110"
+    ],
+    "owasp_llm": [
+      "LLM04:2026"
+    ],
+    "rationale": "Possible compromise of tool execution behavior; process debugging can match."
+  },
+  "title": "Process manipulation targeting tool execution infrastructure",
+  "status": "experimental",
+  "level": "high",
+  "description": "Pairs process-interference primitives with a tool-control target.",
+  "references": [
+    "https://metr.org/hugging-face-incident-report-aug-2026.pdf#page=66",
+    "https://metr.org/hugging-face-incident-report-aug-2026.pdf#page=68"
+  ],
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "primitive": {
+      "CommandLine|re": "(?i)\\bptrace\\b|PTRACE_(?:ATTACH|POKE\\w*)|\\bSIGSTOP\\b|\\bkill\\s+-STOP\\b|/proc/[0-9]+/mem"
+    },
+    "target": {
+      "CommandLine|re": "(?i)\\bttrpc\\b|\\bExecProcess\\b|tool[-_ ](?:call|execution|handler)|codex[-_]app[-_]server"
+    },
+    "condition": "primitive and target"
+  },
+  "falsepositives": [
+    "Authorized debugging of the agent runtime."
+  ],
+  "investigation": "Preserve host process and audit telemetry. Session outputs may be unreliable after attempted tool-path interference."
+}

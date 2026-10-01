@@ -1,0 +1,27 @@
+{
+  "id": "missing-context",
+  "title": "Tool call without a recorded user request",
+  "level": "low",
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "classification": {
+    "atlas": [],
+    "owasp_llm": [],
+    "rationale": "A telemetry gap is not an adversarial technique or OWASP vulnerability."
+  },
+  "detection": {
+    "selection": {
+      "ContextMissing": true
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "Authorized development or security testing; inspect recorded context."
+  ],
+  "status": "experimental",
+  "description": "A tool call has no recorded user request in the parsed session.",
+  "references": [],
+  "investigation": "Inspect the surrounding rollout and any prior context before interpreting the call."
+}

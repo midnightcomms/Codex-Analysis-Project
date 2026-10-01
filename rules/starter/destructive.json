@@ -1,0 +1,31 @@
+{
+  "id": "destructive",
+  "title": "Potentially destructive command",
+  "level": "high",
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "classification": {
+    "atlas": [
+      "AML.T0101"
+    ],
+    "owasp_llm": [
+      "LLM03:2026"
+    ],
+    "rationale": "Potential destruction through a tool; authorized cleanup may match."
+  },
+  "detection": {
+    "selection": {
+      "CommandLine|re": "(?i)\\brm\\s+[^\\n]*-[a-z]*r[a-z]*f|\\brm\\s+[^\\n]*-[a-z]*f[a-z]*r|\\bgit\\s+reset\\s+--hard|\\b(remove-item|format-volume|mkfs)\\b"
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "Authorized development or security testing; inspect recorded context."
+  ],
+  "status": "experimental",
+  "description": "The recorded command contains a deletion, disk formatting, or hard reset primitive.",
+  "references": [],
+  "investigation": "Review the command target, approval, and tool result before assessing impact."
+}

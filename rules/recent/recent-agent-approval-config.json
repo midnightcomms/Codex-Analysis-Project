@@ -1,0 +1,46 @@
+{
+  "id": "recent-agent-approval-config",
+  "title": "Agent configuration write weakens approval controls",
+  "status": "experimental",
+  "level": "high",
+  "description": "Requires a configuration target, mutation syntax, and a permissive setting in the recorded call.",
+  "references": [
+    "https://research.checkpoint.com/2026/ai-security-report-2026/"
+  ],
+  "intelligence": {
+    "source_id": "checkpoint-2026-07",
+    "date": "2026-07-14",
+    "date_basis": "publication",
+    "source_type": "threat_research_summary",
+    "detector_status": "behavioral_hypothesis"
+  },
+  "classification": {
+    "atlas": [
+      "AML.T0081"
+    ],
+    "owasp_llm": [
+      "LLM03:2026"
+    ],
+    "rationale": "Possible persistent weakening of agent oversight; legitimate configuration changes can match."
+  },
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "detection": {
+    "target": {
+      "CommandLine|re": "(?i)\\.codex[/\\\\]config\\.toml|\\.claude[/\\\\]settings(?:\\.local)?\\.json|\\.mcp\\.json"
+    },
+    "mutation": {
+      "CommandLine|re": "(?i)\\*\\*\\* (?:Update|Add) File:|\\bapply_patch\\b|\\bsed\\s+-i|\\.write_(?:text|bytes)\\s*\\(|\\bSet-Content\\b|(?:^|[\\s;])>{1,2}\\s*"
+    },
+    "permissive": {
+      "CommandLine|re": "(?i)approval_policy[\"']?\\s*[=:]\\s*[\"']never|sandbox_mode[\"']?\\s*[=:]\\s*[\"']danger-full-access|defaultMode[\"']?\\s*:\\s*[\"']bypassPermissions|dangerouslyDisableSandbox[\"']?\\s*:\\s*true"
+    },
+    "condition": "target and mutation and permissive"
+  },
+  "falsepositives": [
+    "Authorized disposable test environments or an explicitly approved configuration change."
+  ],
+  "investigation": "Review the exact diff and approvals. Check whether the setting persists or is inherited by other sessions."
+}

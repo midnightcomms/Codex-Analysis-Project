@@ -1,0 +1,21 @@
+{
+  "id": "download-despite-review-only-request",
+  "title": "Remote shell execution with a review-only user request",
+  "status": "experimental",
+  "level": "high",
+  "description": "Requires a remote shell command and a recorded request to review without executing it.",
+  "references": [],
+  "logsource": {"product": "codex", "category": "ai_session"},
+  "detection": {
+    "command": {"CommandLine|re": "(?i)curl[\\s\\S]*\\|\\s*(bash|sh)\\b"},
+    "context": {"UserRequest|contains": ["do not execute", "do not run", "review only"]},
+    "condition": "command and context"
+  },
+  "falsepositives": ["Command appears in quoted code or a test fixture; inspect the full tool call."],
+  "investigation": "Compare the command with the user request and the tool result.",
+  "classification": {
+    "atlas": ["AML.T0050"],
+    "owasp_llm": ["LLM03:2026"],
+    "rationale": "Interpreter execution may exceed a review-only request; authorization needs independent review."
+  }
+}

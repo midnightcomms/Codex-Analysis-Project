@@ -1,0 +1,35 @@
+{
+  "id": "injection",
+  "title": "Instruction override language in tool output",
+  "level": "medium",
+  "logsource": {
+    "product": "codex",
+    "category": "ai_session"
+  },
+  "classification": {
+    "atlas": [
+      "AML.T0051.001"
+    ],
+    "owasp_llm": [
+      "LLM01:2026"
+    ],
+    "rationale": "Instructions occur in tool output; this detects exposure, not successful influence."
+  },
+  "detection": {
+    "selection": {
+      "Output|contains": [
+        "ignore previous instructions",
+        "ignore all previous instructions",
+        "disregard your instructions"
+      ]
+    },
+    "condition": "selection"
+  },
+  "falsepositives": [
+    "Authorized development or security testing; inspect recorded context."
+  ],
+  "status": "experimental",
+  "description": "Tool output contains instruction override language directed at the assistant.",
+  "references": [],
+  "investigation": "Trace the source of the output and check whether later actions followed its instructions."
+}
